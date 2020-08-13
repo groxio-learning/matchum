@@ -16,9 +16,25 @@ defmodule Matchum.Game.Board do
     %{board | guesses: [guess | board.guesses]}
   end
 
-  def won?(%{guesses: [last_guess | _], answer: last_guess}) do
+  defp won?(%{guesses: [last_guess | _], answer: last_guess}) do
     true
   end
 
-  def won?(_), do: false
+  defp won?(_), do: false
+
+  defp lost?(board) do
+    length(board.guesses) == 10 and !won?(board)
+  end
+
+  def status(board) do
+    cond do
+      won?(board) ->
+        :won
+      lost?(board) ->
+        :lost
+      true ->
+        :playing
+    end
+  end
+
 end
