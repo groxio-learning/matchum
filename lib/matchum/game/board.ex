@@ -1,6 +1,6 @@
 defmodule Matchum.Game.Board do
   defstruct guesses: [], answer: [1, 2, 3, 4]
-  alias Matchum.Game.Board
+  alias Matchum.Game.Score
 
   def new() do
     __struct__(answer: random_answer())
@@ -16,9 +16,7 @@ defmodule Matchum.Game.Board do
     %{board | guesses: [guess | board.guesses]}
   end
 
-  defp won?(%{guesses: [last_guess | _], answer: last_guess}) do
-    true
-  end
+  defp won?(%{guesses: [last_guess | _], answer: last_guess}), do: true
 
   defp won?(_), do: false
 
@@ -35,6 +33,25 @@ defmodule Matchum.Game.Board do
       true ->
         :playing
     end
+  end
+
+  def row(board, guess) do
+    %{
+      guess: guess,
+      score: Score.new(board.answer, guess)
+    }
+  end
+
+  def all_rows(board) do
+    board.guesses
+    |> Enum.map(fn(guess) -> row(board, guess)end)
+  end
+
+  def to_map(board) do
+    %{
+      status: status(board),
+      rows: all_rows(board)
+    }
   end
 
 end
