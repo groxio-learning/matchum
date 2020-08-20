@@ -16,9 +16,7 @@ defmodule Matchum.Game.Board do
     %{board | guesses: [guess | board.guesses]}
   end
 
-  defp won?(%{guesses: [last_guess | _], answer: last_guess}) do
-    true
-  end
+  defp won?(%{guesses: [last_guess | _], answer: last_guess}), do: true
 
   defp won?(_), do: false
 
