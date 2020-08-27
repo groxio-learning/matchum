@@ -18,6 +18,7 @@ defmodule MatchumWeb.Router do
     pipe_through :browser
 
     live "/", PageLive, :index
+    live "/game", GameLive
   end
 
   # Other scopes may use custom stacks.
