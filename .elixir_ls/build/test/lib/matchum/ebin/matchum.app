@@ -7,6 +7,7 @@
               {description,"matchum"},
               {modules,['Elixir.Matchum','Elixir.Matchum.Application',
                         'Elixir.Matchum.DataCase','Elixir.Matchum.Game.Board',
+                        'Elixir.Matchum.Game.Game',
                         'Elixir.Matchum.Game.Score','Elixir.Matchum.Repo',
                         'Elixir.MatchumWeb','Elixir.MatchumWeb.ChannelCase',
                         'Elixir.MatchumWeb.ConnCase',
