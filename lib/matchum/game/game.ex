@@ -13,7 +13,7 @@ defmodule Matchum.Game do
     %{guess: guess, score: Score.new(answer, guess)}
   end
 
-  def new() do
-    Board.new()
-  end
+  def new(), do: Board.new()
+
+  def move(board, guess), do: Board.move(board, guess)
 end
