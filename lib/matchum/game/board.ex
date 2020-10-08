@@ -28,8 +28,10 @@ defmodule Matchum.Game.Board do
     cond do
       won?(board) ->
         :won
+
       lost?(board) ->
         :lost
+
       true ->
         :playing
     end
@@ -44,7 +46,7 @@ defmodule Matchum.Game.Board do
 
   def all_rows(board) do
     board.guesses
-    |> Enum.map(fn(guess) -> row(board, guess)end)
+    |> Enum.map(fn guess -> row(board, guess) end)
   end
 
   def to_map(board) do
@@ -53,5 +55,4 @@ defmodule Matchum.Game.Board do
       rows: all_rows(board)
     }
   end
-
 end

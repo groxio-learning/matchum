@@ -7,8 +7,12 @@ defmodule MatchumWeb.GameLive do
   def mount(_params, _session, socket) do
     {
       :ok,
-      assign(socket, proposed_guess: [], board: Game.new()
-      |> Game.move([1, 3, 4, 5]))
+      assign(socket,
+        proposed_guess: [],
+        board:
+          Game.new()
+          |> Game.move([1, 3, 4, 5])
+      )
       |> build_game()
     }
   end
@@ -22,14 +26,8 @@ defmodule MatchumWeb.GameLive do
     <pre>
     <%= inspect @board %>
     <%= raw(render_board(@game)) %>
-    Proposed Guess: <%= inspect @proposed_guess %>
-    <button phx-click="red" value="8000" style="background-color:red;">Red</button>
-    <button style="background-color:blue;">Blue</button>
-    <button style="background-color:green;">Green</button>
-    <button style="background-color:purple;">Purple</button>
-    <button style="background-color:brown;">Brown</button>
-    <button style="background-color:salmon;">Salmon</button>
-    <button style="background-color:orange;">Orange</button>
+    <%= raw(render_buttons()) %>
+    Proposed Guess: <%= raw(render_proposed_guess(@proposed_guess)) %>
     <button> Grade </button>
     <button> Clear </button>
     </pre>
@@ -40,14 +38,40 @@ defmodule MatchumWeb.GameLive do
     render_rows(game.rows) <> render_status(game.status)
   end
 
+  defp render_buttons() do
+    colors = %{
+      "red" => 8,
+      "blue" => 1,
+      "green" => 2,
+      "purple" => 3,
+      "brown" => 4,
+      "salmon" => 5,
+      "orange" => 6,
+      "black" => 7
+    }
+
+    colors
+    |> Enum.map(fn {color, code} ->
+      ~s[<button phx-click="add_item"  phx-value-code="#{code}" phx-value-color="#{color}"
+      style="background-color:#{color};">#{String.capitalize(color)}</button>]
+    end)
+    |> Enum.join("\n")
+  end
+
+  defp render_proposed_guess(items) do
+    for item <- items do
+      ~s[<span style="color: #{color(item)}"> (⌐■_■) : #{item} </span>]
+    end
+  end
+
   defp render_rows(rows) do
     for row <- rows do
       """
       <p> #{render_pegs(row.guess)} </p>
-      <p> #{inspect row.score.reds} #{inspect row.score.whites} </p>
+      <p> #{inspect(row.score.reds)} #{inspect(row.score.whites)} </p>
       """
     end
-    |> Enum.join
+    |> Enum.join()
   end
 
   defp render_pegs(guess) do
@@ -71,14 +95,12 @@ defmodule MatchumWeb.GameLive do
     """
   end
 
-  def handle_event("red", %{"value"=>value}, socket) do
-    {:noreply, add_item(socket, String.to_integer(value))}
+  def handle_event("add_item", %{"code" => code, "color" => _color}, socket) do
+    {:noreply, add_item(socket, String.to_integer(code))}
   end
 
   defp add_item(socket, color) do
     updated_proposed_guess = socket.assigns.proposed_guess ++ [color]
     assign(socket, proposed_guess: updated_proposed_guess)
   end
-
-
 end

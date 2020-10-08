@@ -1,14 +1,14 @@
 defmodule Matchum.Game.Score do
-  defstruct [reds: 0, whites: 0]
+  defstruct reds: 0, whites: 0
 
   def new(answer, guess) do
-    %__MODULE__ {reds: reds(answer,guess), whites: whites(answer, guess)}
+    %__MODULE__{reds: reds(answer, guess), whites: whites(answer, guess)}
   end
 
   # red = right color, right place
   defp reds(answer, guess) do
     Enum.zip(answer, guess)
-    |> Enum.count( fn {a, b} -> a == b end)
+    |> Enum.count(fn {a, b} -> a == b end)
   end
 
   # white = right color, wrong place
@@ -20,5 +20,4 @@ defmodule Matchum.Game.Score do
   defp misses(answer, guess), do: length(guess -- answer)
 
   defp ball_count(answer), do: length(answer)
-
 end
