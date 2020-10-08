@@ -7,7 +7,7 @@ defmodule MatchumWeb.GameLive do
   def mount(_params, _session, socket) do
     {
       :ok,
-      assign(socket, board: Game.new()
+      assign(socket, proposed_guess: [], board: Game.new()
       |> Game.move([1, 3, 4, 5]))
       |> build_game()
     }
@@ -22,6 +22,16 @@ defmodule MatchumWeb.GameLive do
     <pre>
     <%= inspect @board %>
     <%= raw(render_board(@game)) %>
+    Proposed Guess: <%= inspect @proposed_guess %>
+    <button phx-click="red" value="8000" style="background-color:red;">Red</button>
+    <button style="background-color:blue;">Blue</button>
+    <button style="background-color:green;">Green</button>
+    <button style="background-color:purple;">Purple</button>
+    <button style="background-color:brown;">Brown</button>
+    <button style="background-color:salmon;">Salmon</button>
+    <button style="background-color:orange;">Orange</button>
+    <button> Grade </button>
+    <button> Clear </button>
     </pre>
     """
   end
@@ -60,4 +70,15 @@ defmodule MatchumWeb.GameLive do
     <div> #{status} </div>
     """
   end
+
+  def handle_event("red", %{"value"=>value}, socket) do
+    {:noreply, add_item(socket, String.to_integer(value))}
+  end
+
+  defp add_item(socket, color) do
+    updated_proposed_guess = socket.assigns.proposed_guess ++ [color]
+    assign(socket, proposed_guess: updated_proposed_guess)
+  end
+
+
 end
