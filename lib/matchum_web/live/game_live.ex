@@ -38,7 +38,7 @@ defmodule MatchumWeb.GameLive do
     <%= raw(render_buttons()) %>
     Proposed Guess: <%= raw(render_proposed_guess(@proposed_guess)) %>
     <button> Grade </button>
-    <button> Clear </button>
+    <button phx-click="clear"> Clear </button>
     </pre>
     """
   end
@@ -88,7 +88,13 @@ defmodule MatchumWeb.GameLive do
     {:noreply, add_item(socket, String.to_integer(code))}
   end
 
-  defp add_item(%{assigns: %{proposed_guess: guess}}=socket, _color) when length(guess) == 4, do: socket    
+  def handle_event("clear", _meta, socket) do
+    {:noreply, clear(socket)}
+  end
+
+  defp clear(socket), do: assign(socket, proposed_guess: [])
+
+  defp add_item(%{assigns: %{proposed_guess: guess}}=socket, _color) when length(guess) == 4, do: socket
   defp add_item(socket, color) do
     updated_proposed_guess = socket.assigns.proposed_guess ++ [color]
     assign(socket, proposed_guess: updated_proposed_guess)
