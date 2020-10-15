@@ -88,6 +88,7 @@ defmodule MatchumWeb.GameLive do
     {:noreply, add_item(socket, String.to_integer(code))}
   end
 
+  defp add_item(%{assigns: %{proposed_guess: guess}}=socket, _color) when length(guess) == 4, do: socket    
   defp add_item(socket, color) do
     updated_proposed_guess = socket.assigns.proposed_guess ++ [color]
     assign(socket, proposed_guess: updated_proposed_guess)
