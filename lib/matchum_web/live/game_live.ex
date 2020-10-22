@@ -2,6 +2,15 @@ defmodule MatchumWeb.GameLive do
   use MatchumWeb, :live_view
   alias Matchum.Game
   import Phoenix.HTML
+  @numbers %{
+    1 => "blue",
+    2 => "green",
+    3 => "purple",
+    4 => "brown",
+    5 => "salmon",
+    6 => "orange",
+    7 => "black",
+    8 => "red"}
 
   @impl true
   def mount(_params, _session, socket) do
@@ -29,7 +38,7 @@ defmodule MatchumWeb.GameLive do
     <%= raw(render_buttons()) %>
     Proposed Guess: <%= raw(render_proposed_guess(@proposed_guess)) %>
     <button> Grade </button>
-    <button> Clear </button>
+    <button phx-click="clear"> Clear </button>
     </pre>
     """
   end
@@ -39,19 +48,8 @@ defmodule MatchumWeb.GameLive do
   end
 
   defp render_buttons() do
-    colors = %{
-      "red" => 8,
-      "blue" => 1,
-      "green" => 2,
-      "purple" => 3,
-      "brown" => 4,
-      "salmon" => 5,
-      "orange" => 6,
-      "black" => 7
-    }
-
-    colors
-    |> Enum.map(fn {color, code} ->
+    @numbers
+    |> Enum.map(fn {code, color} ->
       ~s[<button phx-click="add_item"  phx-value-code="#{code}" phx-value-color="#{color}"
       style="background-color:#{color};">#{String.capitalize(color)}</button>]
     end)
@@ -60,7 +58,7 @@ defmodule MatchumWeb.GameLive do
 
   defp render_proposed_guess(items) do
     for item <- items do
-      ~s[<span style="color: #{color(item)}"> (⌐■_■) : #{item} </span>]
+      ~s[<span style="color: #{@numbers[item]}"> (⌐■_■) : #{item} </span>]
     end
   end
 
@@ -76,18 +74,9 @@ defmodule MatchumWeb.GameLive do
 
   defp render_pegs(guess) do
     for peg <- guess do
-      ~s[<span style="color: #{color(peg)}"> (⌐■_■) : #{peg} </span>]
+      ~s[<span style="color: #{@numbers[peg]}"> (⌐■_■) : #{peg} </span>]
     end
   end
-
-  defp color(1), do: "blue"
-  defp color(2), do: "green"
-  defp color(3), do: "purple"
-  defp color(4), do: "brown"
-  defp color(5), do: "salmon"
-  defp color(6), do: "orange"
-  defp color(7), do: "black"
-  defp color(8), do: "red"
 
   defp render_status(status) do
     """
@@ -99,6 +88,13 @@ defmodule MatchumWeb.GameLive do
     {:noreply, add_item(socket, String.to_integer(code))}
   end
 
+  def handle_event("clear", _meta, socket) do
+    {:noreply, clear(socket)}
+  end
+
+  defp clear(socket), do: assign(socket, proposed_guess: [])
+
+  defp add_item(%{assigns: %{proposed_guess: guess}}=socket, _color) when length(guess) == 4, do: socket
   defp add_item(socket, color) do
     updated_proposed_guess = socket.assigns.proposed_guess ++ [color]
     assign(socket, proposed_guess: updated_proposed_guess)
