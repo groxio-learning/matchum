@@ -17,4 +17,9 @@ defmodule Matchum.Game do
   def new(), do: Board.new()
 
   def move(board, guess), do: Board.move(board, guess)
+
+  def status(board) do
+    Board.status(board)
+  end
+
 end

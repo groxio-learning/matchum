@@ -18,9 +18,7 @@ defmodule MatchumWeb.GameLive do
       :ok,
       assign(socket,
         proposed_guess: [],
-        board:
-          Game.new()
-          |> Game.move([1, 3, 4, 5])
+        board: Game.new()
       )
       |> build_game()
     }
@@ -31,13 +29,13 @@ defmodule MatchumWeb.GameLive do
   end
 
   def render(assigns) do
+      # <%= inspect @board %>
     ~L"""
     <pre>
-    <%= inspect @board %>
     <%= raw(render_board(@game)) %>
     <%= raw(render_buttons()) %>
     Proposed Guess: <%= raw(render_proposed_guess(@proposed_guess)) %>
-    <button> Grade </button>
+    <button phx-click="submit" <%= if !valid_guess?(@proposed_guess), do: "disabled" %> > Submit Guess </button>
     <button phx-click="clear"> Clear </button>
     </pre>
     """
@@ -88,15 +86,28 @@ defmodule MatchumWeb.GameLive do
     {:noreply, add_item(socket, String.to_integer(code))}
   end
 
+  def handle_event("submit", _value, socket) do
+    {:noreply, socket |> append_guess |> clear |> build_game }
+  end
+
   def handle_event("clear", _meta, socket) do
     {:noreply, clear(socket)}
   end
 
+  defp valid_guess?(proposed_guess), do: length(proposed_guess) == 4
+
   defp clear(socket), do: assign(socket, proposed_guess: [])
+
+  defp append_guess(socket) do
+    updated_board = Game.move(socket.assigns.board, socket.assigns.proposed_guess)
+    assign(socket, board: updated_board)
+  end
 
   defp add_item(%{assigns: %{proposed_guess: guess}}=socket, _color) when length(guess) == 4, do: socket
   defp add_item(socket, color) do
     updated_proposed_guess = socket.assigns.proposed_guess ++ [color]
     assign(socket, proposed_guess: updated_proposed_guess)
   end
+
+
 end
