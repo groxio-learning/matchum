@@ -21,5 +21,4 @@ defmodule Matchum.Game do
   def status(board) do
     Board.status(board)
   end
-
 end
