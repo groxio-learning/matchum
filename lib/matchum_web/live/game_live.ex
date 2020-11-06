@@ -35,11 +35,11 @@ defmodule MatchumWeb.GameLive do
     ~L"""
     <pre>
     <%= live_component @socket, MatchumWeb.Board, game: @game %>
-    <%= raw(render_buttons()) %>
+    <div style="display:flex; flex-wrap:wrap; justify-content:center; "><%= raw(render_buttons()) %></div>
 
     Proposed Guess: <%= raw(render_proposed_guess(@proposed_guess)) %>
-    <button phx-click="submit" <%= if !valid_guess?(@proposed_guess), do: "disabled" %> > Submit Guess </button>
-    <button phx-click="clear"> Clear </button>
+    <div style="display:flex; justify-content:center;"><button phx-click="submit" <%= if !valid_guess?(@proposed_guess), do: "disabled" %> > Submit Guess </button>
+    <button style="margin-left:10px;" phx-click="clear"> Clear </button></div>
     </pre>
     """
   end
@@ -48,9 +48,8 @@ defmodule MatchumWeb.GameLive do
     @numbers
     |> Enum.map(fn {code, color} ->
       ~s[<button phx-click="add_item"  phx-value-code="#{code}" phx-value-color="#{color}"
-      style="background-color:#{color};">#{String.capitalize(color)}</button>]
+      style="background-color:#{color}; margin:15px; width:150px; text-align:center;">#{String.capitalize(color)}</button>]
     end)
-    |> Enum.join("\n")
   end
 
   defp render_proposed_guess(items) do
