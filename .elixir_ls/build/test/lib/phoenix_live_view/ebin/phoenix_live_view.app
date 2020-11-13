@@ -1,6 +1,6 @@
 {application,phoenix_live_view,
-             [{applications,[kernel,stdlib,elixir,logger,phoenix_html,
-                             phoenix]},
+             [{applications,[kernel,stdlib,elixir,logger,phoenix,
+                             phoenix_html]},
               {description,"Rich, real-time user experiences with server-rendered HTML\n"},
               {modules,['Elixir.Inspect.Phoenix.LiveView.Socket',
                         'Elixir.Inspect.Phoenix.LiveViewTest.Element',
